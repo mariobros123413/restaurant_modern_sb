@@ -14,7 +14,7 @@ import com.restaurant.modern.service.FacturaService;
 
 @RestController
 @RequestMapping("/api/factura")
-public class FacturaController {
+public class FacturaController {//
 
 	private FacturaService facturaService;
 

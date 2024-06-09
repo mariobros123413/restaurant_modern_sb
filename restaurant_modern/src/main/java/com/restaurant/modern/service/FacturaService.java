@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.modern.entity.Factura;
@@ -38,6 +36,15 @@ public class FacturaService {
 			throw new IllegalArgumentException("Usuario no encontrado con ID: " + id_usuario);
 		}
 	}
-	
-	//public getFacturaById(String nro)
+
+	public Factura getFactura(String nro) {
+		Optional<Factura> optionalFactura = facturaRepository.findById(nro);
+		if (optionalFactura.isPresent()) {
+			return optionalFactura.get();
+		} else {
+			// Manejar el caso cuando la factura no se encuentra
+			throw new IllegalArgumentException("Factura no encontrada con número: " + nro);
+		}
+	}
+
 }

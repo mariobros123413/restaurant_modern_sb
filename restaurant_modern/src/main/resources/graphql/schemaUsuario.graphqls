@@ -1,0 +1,6 @@
+type Usuario {
+    id: ID!
+    nombre_usuario: String!
+    password: String!
+    admin: Boolean!
+}

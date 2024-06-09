@@ -14,24 +14,23 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-	@Bean
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            /*.authorizeHttpRequests((requests) -> requests
-                .anyRequest().permitAll()
-            );*/
-        	.csrf().disable()
-        	.authorizeHttpRequests((requests) -> requests
-                    .anyRequest().permitAll() // Permitir acceso a todas las URL sin autenticación
-                )
-        	.formLogin().permitAll()
-        	.and()
-        	.httpBasic();
-        	
+            .csrf().disable()
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/graphql", "/graphiql").permitAll() // Permite acceso a las rutas de GraphQL
+                .anyRequest().authenticated()
+            )
+            .formLogin().permitAll()
+            .and()
+            .httpBasic();
+
         return http.build();
     }
-	
-	@Bean
+
+    @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()
             .username("jose")
@@ -41,8 +40,8 @@ public class SecurityConfig {
 
         return new InMemoryUserDetailsManager(user);
     }
-	
-	@Bean
+
+    @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }

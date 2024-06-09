@@ -1,0 +1,13 @@
+type Factura {
+    nro: ID!
+    id_usuario: Usuario! # Corregido: asegúrate de que Usuario esté definido en el mismo archivo o en un archivo importado
+    total: Float!
+    fecha: String!
+}
+
+type Usuario {
+    id: ID!
+    nombre_usuario: String!
+    password: String!
+    admin: Boolean!
+}

@@ -3,7 +3,8 @@ package com.restaurant.modern.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,6 @@ import com.restaurant.modern.repository.UsuarioRepository;
 import com.restaurant.modern.service.UsuarioService;
 
 @RestController
-@RequestMapping("/api/usuario")
 public class UsuarioController {
 
 	private UsuarioService usuarioService;
@@ -23,7 +23,7 @@ public class UsuarioController {
 	public UsuarioController(UsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
-	@PostMapping
+	@MutationMapping
 	public Usuario crearUsuario(@RequestBody Usuario usuario){
         System.out.println("Received Usuario: " + usuario.getNombre_usuario());
         //return usuarioRepo.save(usuario);
@@ -31,7 +31,7 @@ public class UsuarioController {
 
 	}
 	
-	@GetMapping
+	@QueryMapping
 	public List<Usuario> getUsuario(){
 	        return usuarioService.getAllUsuarios();
 	}

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.modern.entity.Factura;
+import com.restaurant.modern.entity.Pedido;
 import com.restaurant.modern.service.FacturaService;
 
 @RestController
@@ -24,8 +25,8 @@ public class FacturaController {//
 	}
 
 	@MutationMapping
-	public Factura crearFactura(String id_usuario, Double total, String fecha) {
-		return facturaService.createFactura(id_usuario, total, fecha);
+	public Factura crearFactura(String id_usuario, Double total, String fecha, Pedido pedido) {
+		return facturaService.createFactura(id_usuario, total, fecha, pedido);
 	}
 
 	@QueryMapping

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.modern.entity.Factura;
+import com.restaurant.modern.entity.Pedido;
 import com.restaurant.modern.entity.Usuario;
 import com.restaurant.modern.repository.FacturaRepository;
 import com.restaurant.modern.repository.UsuarioRepository;
@@ -22,13 +23,13 @@ public class FacturaService {
 		return facturaRepository.findAll();
 	}
 
-	public Factura createFactura(String id_usuario, Double total, String fecha ) {
+	public Factura createFactura(String id_usuario, Double total, String fecha, Pedido pedido ) {
 
 		// Buscar el usuario en la base de datos
 		Optional<Usuario> optionalUsuario = usuarioRepository.findById(id_usuario);
 		if (optionalUsuario.isPresent()) {
 			Usuario usuario = optionalUsuario.get();
-			Factura facturac = new Factura(usuario, total, fecha);
+			Factura facturac = new Factura(usuario, total, fecha, pedido);
 
 			System.out.println("Entregando --------------");
 			return facturaRepository.save(facturac);

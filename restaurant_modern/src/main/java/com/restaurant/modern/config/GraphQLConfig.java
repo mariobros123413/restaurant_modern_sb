@@ -19,6 +19,7 @@ import org.springframework.graphql.execution.GraphQlSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.stream.Stream;
+import graphql.scalars.ExtendedScalars;
 
 @Configuration
 public class GraphQLConfig {
@@ -29,9 +30,9 @@ public class GraphQLConfig {
 	private UsuarioResolver usuarioResolver;
 
 	@Bean
-	public RuntimeWiring.Builder runtimeWiringBuilder() {
-		return RuntimeWiring.newRuntimeWiring();
-	}
+    public RuntimeWiring.Builder runtimeWiringBuilder() {
+        return RuntimeWiring.newRuntimeWiring();
+    }
 
 	@Bean
 	public GraphQlSource graphQlSource(RuntimeWiring.Builder runtimeWiringBuilder) throws IOException {
@@ -39,30 +40,29 @@ public class GraphQLConfig {
 		SchemaGenerator schemaGenerator = new SchemaGenerator();
 
 		TypeDefinitionRegistry typeRegistry = new TypeDefinitionRegistry();
-        Resource schemaResourceFactura = new ClassPathResource("graphql/schema.graphqls");
-        
+		Resource schemaResourceFactura = new ClassPathResource("graphql/schema.graphqls");
 
-        typeRegistry.merge(schemaParser.parse(schemaResourceFactura.getInputStream()));
-        
+		typeRegistry.merge(schemaParser.parse(schemaResourceFactura.getInputStream()));
 
 		// Configurar el RuntimeWiring
 		RuntimeWiring runtimeWiring = runtimeWiringBuilder
 				.type("Query",
-						typeWiring -> typeWiring.dataFetcher("facturas",environment -> facturaResolver.getFacturas())
-												 .dataFetcher("factura", environment -> facturaResolver.getFactura(environment.getArgument("nro")))
-							                     .dataFetcher("usuarios", environment -> usuarioResolver.getUsuarios())
-							                     .dataFetcher("usuario", environment -> usuarioResolver.getUsuario(environment.getArgument("id")
-										)))
-				.type("Mutation", 
+						typeWiring -> typeWiring.dataFetcher("facturas", environment -> facturaResolver.getFacturas())
+								.dataFetcher("factura",
+										environment -> facturaResolver.getFactura(environment.getArgument("nro")))
+								.dataFetcher("usuarios", environment -> usuarioResolver.getUsuarios())
+								.dataFetcher("usuario",
+										environment -> usuarioResolver.getUsuario(environment.getArgument("id"))))
+				.type("Mutation",
 						typeWiring -> typeWiring
-                        .dataFetcher("createFactura", environment -> facturaResolver.createFactura(
-                                environment.getArgument("id_usuario"),
-                                environment.getArgument("total"),
-                                environment.getArgument("fecha")))
-                        .dataFetcher("createUsuario", environment -> usuarioResolver.createUsuario(
-                                environment.getArgument("nombreUsuario"),
-                                environment.getArgument("password"),
-                                environment.getArgument("admin"))))
+								.dataFetcher("createFactura",
+										environment -> facturaResolver.createFactura(
+												environment.getArgument("id_usuario"), environment.getArgument("total"),
+												environment.getArgument("fecha"), environment.getArgument("pedido")))
+								.dataFetcher("createUsuario",
+										environment -> usuarioResolver.createUsuario(
+												environment.getArgument("nombreUsuario"),
+												environment.getArgument("password"), environment.getArgument("admin"))))
 				.build();
 
 		GraphQLSchema schema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);

@@ -10,23 +10,24 @@ public class Factura {
 	private Usuario id_usuario;
 	private Double total;
 	private String fecha;
+	private Pedido pedido;
 
-	public Factura(Usuario id_usuario, Double total, String fecha) {
+	public Factura(Usuario id_usuario, Double total, String fecha, Pedido pedido) {
 		super();
 		this.id_usuario = id_usuario;
 		this.total = total;
 		this.fecha = fecha;
+		this.pedido = pedido;
 	}
 
 	public String getNro() {
 		return nro;
 	}
 
-	
 	public void setNro(String nro) {
 		this.nro = nro;
 	}
-	
+
 	public Usuario getId_usuario() {
 		return id_usuario;
 	}
@@ -49,6 +50,14 @@ public class Factura {
 
 	public void setFecha(String fecha) {
 		this.fecha = fecha;
+	}
+
+	public Pedido getPedido() {
+		return pedido;
+	}
+
+	public void setPedido(Pedido pedido) {
+		this.pedido = pedido;
 	}
 
 }

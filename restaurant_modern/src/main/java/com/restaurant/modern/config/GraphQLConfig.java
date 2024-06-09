@@ -12,6 +12,7 @@ import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.core.io.Resource;
 
 import com.restaurant.modern.resolver.FacturaResolver;
+import com.restaurant.modern.resolver.MesaResolver;
 import com.restaurant.modern.resolver.UsuarioResolver;
 
 import org.springframework.graphql.execution.GraphQlSource;
@@ -28,6 +29,8 @@ public class GraphQLConfig {
 	private FacturaResolver facturaResolver;
 	@Autowired
 	private UsuarioResolver usuarioResolver;
+	@Autowired
+	private MesaResolver mesaResolver;
 
 	@Bean
     public RuntimeWiring.Builder runtimeWiringBuilder() {
@@ -47,18 +50,24 @@ public class GraphQLConfig {
 		// Configurar el RuntimeWiring
 		RuntimeWiring runtimeWiring = runtimeWiringBuilder
 				.type("Query",
-						typeWiring -> typeWiring.dataFetcher("facturas", environment -> facturaResolver.getFacturas())
-								.dataFetcher("factura",
-										environment -> facturaResolver.getFactura(environment.getArgument("nro")))
+						typeWiring -> typeWiring
+								.dataFetcher("facturas", environment -> facturaResolver.getFacturas())
+								.dataFetcher("factura",	environment -> facturaResolver.getFactura(environment.getArgument("nro")))
 								.dataFetcher("usuarios", environment -> usuarioResolver.getUsuarios())
-								.dataFetcher("usuario",
-										environment -> usuarioResolver.getUsuario(environment.getArgument("id"))))
+								.dataFetcher("usuario",	environment -> usuarioResolver.getUsuario(environment.getArgument("id")))
+								.dataFetcher("mesas", environment -> mesaResolver.getMesas())
+								.dataFetcher("mesaByNro", environment -> mesaResolver.getMesaByNro(environment.getArgument("nro")))
+								.dataFetcher("mesa",	environment -> mesaResolver.getMesa(environment.getArgument("id"))))
 				.type("Mutation",
 						typeWiring -> typeWiring
 								.dataFetcher("createFactura",
 										environment -> facturaResolver.createFactura(
 												environment.getArgument("id_usuario"), environment.getArgument("total"),
 												environment.getArgument("fecha"), environment.getArgument("pedido")))
+								.dataFetcher("createMesa",
+										environment -> mesaResolver.createMesa(
+												environment.getArgument("id_usuario"), environment.getArgument("nro"),
+												environment.getArgument("capacidad"), environment.getArgument("disponible")))
 								.dataFetcher("createUsuario",
 										environment -> usuarioResolver.createUsuario(
 												environment.getArgument("nombreUsuario"),

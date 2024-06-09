@@ -61,16 +61,26 @@ type Usuario {
     admin: Boolean!
 }
 
-
+type Mesa {
+	id: ID!
+	nro: Int!
+	capacidad: Int!
+	disponible: Boolean!
+	usuario: Usuario!
+}
 
 type Query {
   facturas: [Factura]
   factura(nro: ID!): Factura
   usuarios: [Usuario]
   usuario(id: ID!): Usuario
+  mesas: [Mesa]
+  mesa(id: ID!): Mesa
+  mesaByNro(nro: Int!): Mesa
 }
 
 type Mutation {
   createFactura(id_usuario: String!, total: Float!, fecha: String!, pedido: PedidoInput!): Factura
   createUsuario(nombreUsuario: String!, password: String!, admin: Boolean!): Usuario
+  createMesa(id_usuario: String!, nro: Int!, capacidad: Int!, disponible: Boolean!): Mesa
 }

@@ -3,6 +3,12 @@
 #import "schemaFactura.graphqls"
 #import "schemaUsuario.graphqls"
 
+input newFactura{
+    id_usuario: String! # Corregido: asegúrate de que Usuario esté definido en el mismo archivo o en un archivo importado
+    total: Float!
+    fecha: String!
+}
+
 type Query {
   facturas: [Factura]
   factura(nro: ID!): Factura
@@ -11,7 +17,7 @@ type Query {
 }
 
 type Mutation {
-  createFactura(idUsuario: ID!, total: Float!, fecha: String!): Factura
+  createFactura(id_usuario: String!, total: Float!, fecha: String!): Factura
   createUsuario(nombreUsuario: String!, password: String!, admin: Boolean!): Usuario
 }
 type Factura {

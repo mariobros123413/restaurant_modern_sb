@@ -24,8 +24,8 @@ public class FacturaController {//
 	}
 
 	@MutationMapping
-	public Factura crearFactura(@RequestBody Factura factura, @PathVariable("id") String id_usuario) {
-		return facturaService.createFactura(factura, id_usuario);
+	public Factura crearFactura(String id_usuario, Double total, String fecha) {
+		return facturaService.createFactura(id_usuario, total, fecha);
 	}
 
 	@QueryMapping

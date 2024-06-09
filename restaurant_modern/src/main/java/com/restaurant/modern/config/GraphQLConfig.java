@@ -12,6 +12,7 @@ import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.core.io.Resource;
 
 import com.restaurant.modern.resolver.FacturaResolver;
+import com.restaurant.modern.resolver.UsuarioResolver;
 
 import org.springframework.graphql.execution.GraphQlSource;
 
@@ -24,6 +25,8 @@ public class GraphQLConfig {
 
 	@Autowired
 	private FacturaResolver facturaResolver;
+	@Autowired
+	private UsuarioResolver usuarioResolver;
 
 	@Bean
 	public RuntimeWiring.Builder runtimeWiringBuilder() {
@@ -45,11 +48,21 @@ public class GraphQLConfig {
 		// Configurar el RuntimeWiring
 		RuntimeWiring runtimeWiring = runtimeWiringBuilder
 				.type("Query",
-						typeWiring -> typeWiring.dataFetcher("facturas", environment -> facturaResolver.getFacturas())
-								.dataFetcher("factura",
-										environment -> facturaResolver.getFactura(environment.getArgument("nro"))))
-				.type("Mutation", typeWiring -> typeWiring.dataFetcher("createFactura", environment -> facturaResolver
-						.createFactura(environment.getArgument("usuario"), environment.getArgument("id_usuario"))))
+						typeWiring -> typeWiring.dataFetcher("facturas",environment -> facturaResolver.getFacturas())
+												 .dataFetcher("factura", environment -> facturaResolver.getFactura(environment.getArgument("nro")))
+							                     .dataFetcher("usuarios", environment -> usuarioResolver.getUsuarios())
+							                     .dataFetcher("usuario", environment -> usuarioResolver.getUsuario(environment.getArgument("id")
+										)))
+				.type("Mutation", 
+						typeWiring -> typeWiring
+                        .dataFetcher("createFactura", environment -> facturaResolver.createFactura(
+                                environment.getArgument("id_usuario"),
+                                environment.getArgument("total"),
+                                environment.getArgument("fecha")))
+                        .dataFetcher("createUsuario", environment -> usuarioResolver.createUsuario(
+                                environment.getArgument("nombreUsuario"),
+                                environment.getArgument("password"),
+                                environment.getArgument("admin"))))
 				.build();
 
 		GraphQLSchema schema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);

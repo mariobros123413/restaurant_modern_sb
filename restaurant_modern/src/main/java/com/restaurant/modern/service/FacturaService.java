@@ -22,15 +22,16 @@ public class FacturaService {
 		return facturaRepository.findAll();
 	}
 
-	public Factura createFactura(Factura factura, String id_usuario) {
+	public Factura createFactura(String id_usuario, Double total, String fecha ) {
 
 		// Buscar el usuario en la base de datos
 		Optional<Usuario> optionalUsuario = usuarioRepository.findById(id_usuario);
 		if (optionalUsuario.isPresent()) {
 			Usuario usuario = optionalUsuario.get();
-			factura.setId_usuario(usuario);
+			Factura facturac = new Factura(usuario, total, fecha);
+
 			System.out.println("Entregando --------------");
-			return facturaRepository.save(factura);
+			return facturaRepository.save(facturac);
 		} else {
 			// Manejar el caso cuando el usuario no se encuentra
 			throw new IllegalArgumentException("Usuario no encontrado con ID: " + id_usuario);

@@ -11,20 +11,25 @@ import com.restaurant.modern.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
-    public List<Usuario> getAllUsuarios() {
-        return usuarioRepository.findAll();
-    }
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 
-    public Usuario createUsuario(Usuario usuario) {
-        // Encriptar el password antes de guardarlo
-        String encodedPassword = passwordEncoder.encode(usuario.getPassword());
-        usuario.setPassword(encodedPassword);
-        return usuarioRepository.save(usuario);
-    }
+	public List<Usuario> getAllUsuarios() {
+		return usuarioRepository.findAll();
+	}
+
+	public Usuario createUsuario(String nombreUsuario, String password, Boolean admin) {
+		// Encriptar el password antes de guardarlo
+		String encodedPassword = passwordEncoder.encode(password);
+		Usuario user = new Usuario(nombreUsuario, encodedPassword, admin);
+		return usuarioRepository.save(user);
+	}
+
+	public Usuario getUsuario(String id) {
+		return usuarioRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+	}
 }

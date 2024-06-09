@@ -24,10 +24,10 @@ public class UsuarioController {
 		this.usuarioService = usuarioService;
 	}
 	@MutationMapping
-	public Usuario crearUsuario(@RequestBody Usuario usuario){
-        System.out.println("Received Usuario: " + usuario.getNombre_usuario());
+	public Usuario crearUsuario(String nombreUsuario, String password, Boolean admin){
+      
         //return usuarioRepo.save(usuario);
-        return usuarioService.createUsuario(usuario);
+        return usuarioService.createUsuario(nombreUsuario, password, admin);
 
 	}
 	

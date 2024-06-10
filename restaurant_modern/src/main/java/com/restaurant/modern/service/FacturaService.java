@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.modern.entity.Factura;
-import com.restaurant.modern.entity.Mesa;
 import com.restaurant.modern.entity.Pedido;
 import com.restaurant.modern.entity.Usuario;
 import com.restaurant.modern.repository.FacturaRepository;

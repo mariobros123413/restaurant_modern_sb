@@ -6,6 +6,10 @@ type Usuario {
     isAdmin: Boolean!
 }
 
+type AuthPayload {
+  token: String
+  user: Usuario
+}
 
 type Query {
   usuarios: [Usuario]
@@ -13,7 +17,8 @@ type Query {
 }
 
 type Mutation {
-  createUsuario(nombreUsuario: String!, password: String!, isAdmin: Boolean!): Usuario
+  createUsuario(nombreUsuario: String!, password: String!, admin: Boolean!): Usuario
   updateUsuario(id: ID!, nombre_usuario: String!, password: String!, isAdmin: Boolean!): Usuario
   deleteUsuario(id: ID!): Boolean
+  login(username: String!, password: String!): String
 }

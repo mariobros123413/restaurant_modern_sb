@@ -1,15 +1,24 @@
 package com.restaurant.modern.entity;
 
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.FetchType;
 
 @Document(collection = "usuario")
 public class Usuario {
 	@Id
 	private String id;
+    @Field("nombre_usuario")
 	private String nombre_usuario;
 	private String password;
 	private boolean isAdmin;
+	@ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles;
 	
 	public Usuario(String nombre_usuario, String password, boolean isAdmin) {
 		this.nombre_usuario = nombre_usuario;

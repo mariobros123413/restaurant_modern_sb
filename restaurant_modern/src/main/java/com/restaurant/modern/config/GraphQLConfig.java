@@ -88,6 +88,9 @@ public class GraphQLConfig {
                         .dataFetcher("createUsuario", environment -> usuarioResolver.createUsuario(
                                 environment.getArgument("nombreUsuario"),
                                 environment.getArgument("password"), environment.getArgument("admin")))
+                        .dataFetcher("login", environment -> usuarioResolver.login(
+                                environment.getArgument("username"),
+                                environment.getArgument("password")))
                         .dataFetcher("updateUsuario", environment -> usuarioResolver.updateUsuario(
                                 environment.getArgument("id"),
                                 environment.getArgument("nombre_usuario"), environment.getArgument("password"),

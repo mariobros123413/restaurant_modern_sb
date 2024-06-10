@@ -1,21 +1,43 @@
 package com.restaurant.modern.resolver;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.restaurant.modern.entity.Usuario;
 import com.restaurant.modern.service.UsuarioService;
 
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class UsuarioResolver implements GraphQLQueryResolver {
 	@Autowired
 	private UsuarioService usuarioService;
+	@Autowired
+	private final PasswordEncoder passwordEncoder;
+
+	private static final String SECRET_KEY = "miclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecreta";
+
+	public UsuarioResolver(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@QueryMapping
 	public List<Usuario> getUsuarios() {
@@ -42,4 +64,37 @@ public class UsuarioResolver implements GraphQLQueryResolver {
 		usuarioService.deleteUsuario(id);
 		return true;
 	}
+
+	@MutationMapping
+	public String login(@Argument String username, @Argument String password) {
+
+		UserDetails userDetails = usuarioService.loadUserByUsername(username);
+
+		if (passwordEncoder.matches(password, userDetails.getPassword())) {
+			Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+					userDetails.getAuthorities());
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			return generateToken(authentication); // Retorna el JWT token
+		} else {
+			throw new BadCredentialsException("Credenciales incorrectas");
+		}
+	}
+
+	private String generateToken(@Argument Authentication authentication) {
+		final long EXPIRATION_TIME = 900000; // 15 minutes in milliseconds
+
+		String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+		Date now = new Date();
+		Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
+		System.out.println(" TOKEN ----------------------?");
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		Set<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toSet());
+		String token = Jwts.builder().setIssuer("Stormpath").setSubject(username).claim("roles", roles)
+				.setIssuedAt(new Date()).setExpiration(expiryDate).signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+				.compact();
+		System.out.println(" TOKEN ----------------------" + token);
+		return token;
+	}
+
 }

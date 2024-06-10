@@ -1,12 +1,14 @@
 package com.restaurant.modern.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "factura")
 public class Factura {
 	@Id
 	private String nro;
+    @DBRef
 	private Usuario id_usuario;
 	private Double total;
 	private String fecha;

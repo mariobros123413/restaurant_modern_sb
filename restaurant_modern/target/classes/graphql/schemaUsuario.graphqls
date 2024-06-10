@@ -1,6 +1,19 @@
+
 type Usuario {
     id: ID!
     nombre_usuario: String!
     password: String!
-    admin: Boolean!
+    isAdmin: Boolean!
+}
+
+
+type Query {
+  usuarios: [Usuario]
+  usuario(id: ID!): Usuario
+}
+
+type Mutation {
+  createUsuario(nombreUsuario: String!, password: String!, isAdmin: Boolean!): Usuario
+  updateUsuario(id: ID!, nombre_usuario: String!, password: String!, isAdmin: Boolean!): Usuario
+  deleteUsuario(id: ID!): Boolean
 }

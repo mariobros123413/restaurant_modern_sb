@@ -1,0 +1,21 @@
+#import "schemaUsuario.graphqls"
+type Mesa {
+	id: ID!
+	nro: Int!
+	capacidad: Int!
+	disponible: Boolean!
+	usuario: Usuario!
+}
+
+extend type Query {
+  mesas: [Mesa]
+  mesa(id: ID!): Mesa
+  mesaByNro(nro: Int!): Mesa
+}
+
+extend type Mutation {
+  createMesa(id_usuario: String!, nro: Int!, capacidad: Int!, disponible: Boolean!): Mesa
+  updateMesa(id: ID!, nro: Int!, capacidad: Int!, disponible: Boolean!): Mesa
+  updateMesaByNro(nro: Int!, capacidad: Int!, disponible: Boolean!): Mesa
+  deleteMesa(id: ID!): Boolean
+}

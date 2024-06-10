@@ -28,6 +28,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
+    		System.out.println(" TOKEN ----------------------?");
+
             Map<String, String> credentials = new ObjectMapper().readValue(request.getInputStream(), HashMap.class);
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -44,7 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .setExpiration(new Date(System.currentTimeMillis() + 864_000_000)) // 10 días
-                .signWith(SignatureAlgorithm.HS512, "SecretKeyToGenJWTs")
+                .signWith(SignatureAlgorithm.HS512, "miclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecreta")
                 .compact();
         response.addHeader("Authorization", "Bearer " + token);
     }

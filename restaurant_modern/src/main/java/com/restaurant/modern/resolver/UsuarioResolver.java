@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -19,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.restaurant.modern.entity.Usuario;
+import com.restaurant.modern.filter.JwtUtils;
 import com.restaurant.modern.service.UsuarioService;
 
 import graphql.kickstart.tools.GraphQLQueryResolver;
@@ -33,13 +37,14 @@ public class UsuarioResolver implements GraphQLQueryResolver {
 	@Autowired
 	private final PasswordEncoder passwordEncoder;
 
-	private static final String SECRET_KEY = "miclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecretamiclavesecreta";
+    private static final SecretKey SECRET_KEY = JwtUtils.getSecretKey();
 
 	public UsuarioResolver(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@QueryMapping
+    //@Secured("ROLE_ADMIN")
 	public List<Usuario> getUsuarios() {
 		return usuarioService.getAllUsuarios();
 	}
@@ -86,12 +91,15 @@ public class UsuarioResolver implements GraphQLQueryResolver {
 		String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
-		System.out.println(" TOKEN ----------------------?");
+		
+		
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		
 		Set<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toSet());
+		
 		String token = Jwts.builder().setIssuer("Stormpath").setSubject(username).claim("roles", roles)
-				.setIssuedAt(new Date()).setExpiration(expiryDate).signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+				.setIssuedAt(now).setExpiration(expiryDate).signWith(SECRET_KEY, SignatureAlgorithm.HS512)
 				.compact();
 		System.out.println(" TOKEN ----------------------" + token);
 		return token;

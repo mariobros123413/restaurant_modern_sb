@@ -33,9 +33,9 @@ public class GraphQLConfig {
 	private MesaResolver mesaResolver;
 
 	@Bean
-    public RuntimeWiring.Builder runtimeWiringBuilder() {
-        return RuntimeWiring.newRuntimeWiring();
-    }
+	public RuntimeWiring.Builder runtimeWiringBuilder() {
+		return RuntimeWiring.newRuntimeWiring();
+	}
 
 	@Bean
 	public GraphQlSource graphQlSource(RuntimeWiring.Builder runtimeWiringBuilder) throws IOException {
@@ -68,10 +68,36 @@ public class GraphQLConfig {
 										environment -> mesaResolver.createMesa(
 												environment.getArgument("id_usuario"), environment.getArgument("nro"),
 												environment.getArgument("capacidad"), environment.getArgument("disponible")))
+								.dataFetcher("updateMesa",
+										environment -> mesaResolver.updateMesa(
+												environment.getArgument("id"), environment.getArgument("nro"),
+												environment.getArgument("capacidad"), environment.getArgument("disponible")))
+								.dataFetcher("updateMesaByNro",
+										environment -> mesaResolver.updateMesaByNro(
+												environment.getArgument("nro"),
+												environment.getArgument("capacidad"), environment.getArgument("disponible")))
+								.dataFetcher("deleteMesa",
+										environment -> mesaResolver.deleteMesa(
+												environment.getArgument("id")))
+								.dataFetcher("updateFactura",
+										environment -> facturaResolver.updateFactura(
+												environment.getArgument("nro"),
+												environment.getArgument("total"), environment.getArgument("fecha")))
+								.dataFetcher("deleteFactura",
+										environment -> facturaResolver.deleteFactura(
+												environment.getArgument("nro")))
 								.dataFetcher("createUsuario",
 										environment -> usuarioResolver.createUsuario(
 												environment.getArgument("nombreUsuario"),
-												environment.getArgument("password"), environment.getArgument("admin"))))
+												environment.getArgument("password"), environment.getArgument("admin")))
+								.dataFetcher("updateUsuario",
+										environment -> usuarioResolver.updateUsuario(
+												environment.getArgument("id"),
+												environment.getArgument("nombre_usuario"), environment.getArgument("password"),
+												environment.getArgument("isAdmin")))
+								.dataFetcher("deleteUsuario",
+										environment -> usuarioResolver.deleteUsuario(
+												environment.getArgument("id"))))
 				.build();
 
 		GraphQLSchema schema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);

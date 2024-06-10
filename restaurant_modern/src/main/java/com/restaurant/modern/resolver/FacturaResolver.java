@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Component;
 
@@ -70,5 +71,16 @@ public class FacturaResolver implements GraphQLQueryResolver {
         pedido.setBebida(bebidas);
 
         return pedido;
+    }
+    
+    @MutationMapping
+    public Factura updateFactura(String nro, Double total, String fecha) {
+        return facturaService.updateFactura(nro, total, fecha);
+    }
+	
+    @MutationMapping
+    public boolean deleteFactura(String nro) {
+        facturaService.deleteFactura(nro);
+        return true;
     }
 }

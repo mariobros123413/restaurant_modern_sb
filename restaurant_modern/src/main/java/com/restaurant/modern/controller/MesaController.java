@@ -36,4 +36,15 @@ public class MesaController {
 	public Mesa getMesa(String id) {
 		return mesaService.getMesa(id);
 	}
+	
+	@MutationMapping
+    public Mesa updateMesa(String id, Integer nro, Integer capacidad, Boolean disponible) {
+        return mesaService.updateMesa(id, nro, capacidad, disponible);
+    }
+
+    @MutationMapping
+    public boolean deleteMesa(String id) {
+        mesaService.deleteMesa(id);
+        return true;
+    }
 }

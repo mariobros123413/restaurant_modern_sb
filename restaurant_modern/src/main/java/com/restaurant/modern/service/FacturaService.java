@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.modern.entity.Factura;
+import com.restaurant.modern.entity.Mesa;
 import com.restaurant.modern.entity.Pedido;
 import com.restaurant.modern.entity.Usuario;
 import com.restaurant.modern.repository.FacturaRepository;
@@ -47,6 +48,18 @@ public class FacturaService {
 			// Manejar el caso cuando la factura no se encuentra
 			throw new IllegalArgumentException("Factura no encontrada con número: " + nro);
 		}
+	}
+	
+	public Factura updateFactura(String nro, Double total, String fecha) {
+		Factura factura = getFactura(nro);
+		factura.setTotal(total);
+		factura.setFecha(fecha);
+		return facturaRepository.save(factura);
+	}
+
+	public void deleteFactura(String nro) {
+		Factura factura= getFactura(nro);
+		facturaRepository.delete(factura);
 	}
 
 }

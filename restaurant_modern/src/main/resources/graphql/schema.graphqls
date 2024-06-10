@@ -58,7 +58,7 @@ type Usuario {
     id: ID!
     nombre_usuario: String!
     password: String!
-    admin: Boolean!
+    isAdmin: Boolean!
 }
 
 type Mesa {
@@ -81,6 +81,13 @@ type Query {
 
 type Mutation {
   createFactura(id_usuario: String!, total: Float!, fecha: String!, pedido: PedidoInput!): Factura
-  createUsuario(nombreUsuario: String!, password: String!, admin: Boolean!): Usuario
+  updateFactura(nro: ID!, total: Float!, fecha: String!): Factura
+  deleteFactura(nro: ID!): Boolean
+  createUsuario(nombreUsuario: String!, password: String!, isAdmin: Boolean!): Usuario
+  updateUsuario(id: ID!, nombre_usuario: String!, password: String!, isAdmin: Boolean!): Usuario
+  deleteUsuario(id: ID!): Boolean
   createMesa(id_usuario: String!, nro: Int!, capacidad: Int!, disponible: Boolean!): Mesa
+  updateMesa(id: ID!, nro: Int!, capacidad: Int!, disponible: Boolean!): Mesa
+  updateMesaByNro(nro: Int!, capacidad: Int!, disponible: Boolean!): Mesa
+  deleteMesa(id: ID!): Boolean
 }

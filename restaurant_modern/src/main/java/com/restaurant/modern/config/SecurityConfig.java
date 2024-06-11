@@ -37,16 +37,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                /*.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                 		.requestMatchers("/graphiql").permitAll() // Permite acceso público a la consola GraphiQL
                         .requestMatchers("/graphql").permitAll() // Permite acceso a /graphql pero con lógica adicional en el filtro
-                         .anyRequest().authenticated()
                 )
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class))))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), userDetailsService))
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+*/
+        .csrf(csrf -> csrf.disable())
+    	.authorizeHttpRequests((requests) -> requests
+                .anyRequest().permitAll() // Permitir acceso a todas las URL sin autenticación
+            )
+    	.formLogin().permitAll()
+    	.and()
+    	.httpBasic();
 
         return http.build();
     }

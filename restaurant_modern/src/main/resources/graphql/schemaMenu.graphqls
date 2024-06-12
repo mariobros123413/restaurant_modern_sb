@@ -1,0 +1,21 @@
+#import "schemaUsuario.graphqls"
+#import "schemaPedido.graphqls"
+
+type Menu {
+    id: ID!
+    usuario: Usuario!
+    plato: [Plato]
+    bebida: [Bebida]
+    fecha: String!
+}
+
+extend type Query {
+  menus: [Menu]
+  menu(id: ID!): Menu
+}
+
+extend type Mutation {
+  createMenu(id_usuario: String!, fecha: String!, plato: [PlatoInput], bebida: [BebidaInput]): Menu
+  updateMenu(id: ID!, fecha: String!, plato: [PlatoInput], bebida: [BebidaInput]): Menu
+  deleteMenu(id: ID!): Boolean
+}

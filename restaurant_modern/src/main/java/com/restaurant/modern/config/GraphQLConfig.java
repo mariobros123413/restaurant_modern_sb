@@ -12,6 +12,7 @@ import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.core.io.Resource;
 
 import com.restaurant.modern.resolver.FacturaResolver;
+import com.restaurant.modern.resolver.MenuResolver;
 import com.restaurant.modern.resolver.MesaResolver;
 import com.restaurant.modern.resolver.UsuarioResolver;
 
@@ -31,6 +32,8 @@ public class GraphQLConfig {
 	private UsuarioResolver usuarioResolver;
 	@Autowired
 	private MesaResolver mesaResolver;
+	@Autowired
+	private MenuResolver menuResolver; 
 
 	@Bean
 	public RuntimeWiring.Builder runtimeWiringBuilder() {
@@ -48,7 +51,8 @@ public class GraphQLConfig {
         Resource[] schemaResources = new Resource[] {
             new ClassPathResource("graphql/schemaUsuario.graphqls"),
             new ClassPathResource("graphql/schemaMesa.graphqls"),
-            new ClassPathResource("graphql/schemaFactura.graphqls")
+            new ClassPathResource("graphql/schemaFactura.graphqls"),
+            new ClassPathResource("graphql/schemaMenu.graphqls")
         };
 
         for (Resource schemaResource : schemaResources) {
@@ -64,7 +68,9 @@ public class GraphQLConfig {
                         .dataFetcher("usuario", environment -> usuarioResolver.getUsuario(environment.getArgument("id")))
                         .dataFetcher("mesas", environment -> mesaResolver.getMesas())
                         .dataFetcher("mesaByNro", environment -> mesaResolver.getMesaByNro(environment.getArgument("nro")))
-                        .dataFetcher("mesa", environment -> mesaResolver.getMesa(environment.getArgument("id"))))
+                        .dataFetcher("mesa", environment -> mesaResolver.getMesa(environment.getArgument("id")))
+                        .dataFetcher("menus", environment -> menuResolver.getMenus())
+                        .dataFetcher("menu", environment -> menuResolver.getMenu(environment.getArgument("id"))))
                 .type("Mutation", typeWiring -> typeWiring
                         .dataFetcher("createFactura", environment -> facturaResolver.createFactura(
                                 environment.getArgument("id_usuario"), environment.getArgument("total"),
@@ -85,6 +91,14 @@ public class GraphQLConfig {
                                 environment.getArgument("total"), environment.getArgument("fecha")))
                         .dataFetcher("deleteFactura", environment -> facturaResolver.deleteFactura(
                                 environment.getArgument("nro")))
+                        .dataFetcher("createMenu", environment -> menuResolver.createMenu(
+                                environment.getArgument("id_usuario"), environment.getArgument("fecha"),
+                                environment.getArgument("plato"),environment.getArgument("bebida")))
+                        .dataFetcher("updateMenu", environment -> menuResolver.updateMenu(
+                        		 environment.getArgument("id"), environment.getArgument("fecha"),
+                                 environment.getArgument("plato"),environment.getArgument("bebida")))
+                        .dataFetcher("deleteMenu", environment -> menuResolver.deleteMenu(
+                                environment.getArgument("id")))
                         .dataFetcher("createUsuario", environment -> usuarioResolver.createUsuario(
                                 environment.getArgument("nombreUsuario"),
                                 environment.getArgument("password"), environment.getArgument("admin")))

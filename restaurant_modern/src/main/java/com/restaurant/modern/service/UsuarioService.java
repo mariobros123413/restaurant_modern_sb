@@ -3,7 +3,6 @@ package com.restaurant.modern.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,9 +36,7 @@ public class UsuarioService implements UserDetailsService {
 	}
 
 	public Usuario createUsuario(String nombreUsuario, String password, Boolean admin) {
-		// Encriptar el password antes de guardarlo
 		String encodedPassword = passwordEncoder.encode(password);
-        Set<String> roles = admin ? Set.of("ADMIN") : Set.of("USER");
 
 		Usuario user = new Usuario(nombreUsuario, encodedPassword, admin);
 		return usuarioRepository.save(user);

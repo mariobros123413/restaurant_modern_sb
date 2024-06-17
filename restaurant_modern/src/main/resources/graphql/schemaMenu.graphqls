@@ -1,5 +1,5 @@
 #import "schemaUsuario.graphqls"
-#import "schemaPedido.graphqls"
+#import "schemaFactura.graphqls"
 
 type Menu {
     id: ID!
@@ -10,8 +10,8 @@ type Menu {
 }
 
 extend type Query {
-  menus: [Menu]
-  menu(id: ID!): Menu
+  getAllMenus: [Menu]
+  getMenu(id: ID!): Menu
 }
 
 extend type Mutation {

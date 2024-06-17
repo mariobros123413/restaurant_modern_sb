@@ -1,124 +1,56 @@
 package com.restaurant.modern.config;
 
-import graphql.schema.GraphQLSchema;
-import graphql.schema.idl.*;
-import graphql.schema.idl.RuntimeWiring.Builder;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.graphql.execution.RuntimeWiringConfigurer;
-import org.springframework.core.io.Resource;
 
-import com.restaurant.modern.resolver.FacturaResolver;
-import com.restaurant.modern.resolver.MenuResolver;
-import com.restaurant.modern.resolver.MesaResolver;
-import com.restaurant.modern.resolver.UsuarioResolver;
-
-import org.springframework.graphql.execution.GraphQlSource;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.stream.Stream;
-import graphql.scalars.ExtendedScalars;
+import com.restaurant.modern.resolver.FacturaMutationResolver;
+import com.restaurant.modern.resolver.FacturaQueryResolver;
+import com.restaurant.modern.resolver.MenuMutationResolver;
+import com.restaurant.modern.resolver.MenuQueryResolver;
+import com.restaurant.modern.resolver.MesaMutationResolver;
+import com.restaurant.modern.resolver.MesaQueryResolver;
+import com.restaurant.modern.resolver.UsuarioMutationResolver;
+import com.restaurant.modern.resolver.UsuarioQueryResolver;
 
 @Configuration
 public class GraphQLConfig {
-
-	@Autowired
-	private FacturaResolver facturaResolver;
-	@Autowired
-	private UsuarioResolver usuarioResolver;
-	@Autowired
-	private MesaResolver mesaResolver;
-	@Autowired
-	private MenuResolver menuResolver; 
-
 	@Bean
-	public RuntimeWiring.Builder runtimeWiringBuilder() {
-		return RuntimeWiring.newRuntimeWiring();
+	UsuarioMutationResolver usuarioMutationResolver() {
+		return new UsuarioMutationResolver();
 	}
 
 	@Bean
-    public GraphQlSource graphQlSource(RuntimeWiring.Builder runtimeWiringBuilder) throws IOException {
-        SchemaParser schemaParser = new SchemaParser();
-        SchemaGenerator schemaGenerator = new SchemaGenerator();
+	UsuarioQueryResolver usuarioQueryResolver() {
+		return new UsuarioQueryResolver();
+	}
+	
+	@Bean
+	FacturaQueryResolver facturaQueryResolver() {
+		return new FacturaQueryResolver();
+	}
 
-        TypeDefinitionRegistry typeRegistry = new TypeDefinitionRegistry();
+	@Bean
+	FacturaMutationResolver facturaMutationResolver() {
+		return new FacturaMutationResolver();
+	}
+	
+	@Bean
+	MenuQueryResolver menuQueryResolver () {
+		return new MenuQueryResolver();
+	}
 
-        // Cargar y combinar los esquemas de los archivos .graphqls
-        Resource[] schemaResources = new Resource[] {
-            new ClassPathResource("graphql/schemaUsuario.graphqls"),
-            new ClassPathResource("graphql/schemaMesa.graphqls"),
-            new ClassPathResource("graphql/schemaFactura.graphqls"),
-            new ClassPathResource("graphql/schemaMenu.graphqls")
-        };
-
-        for (Resource schemaResource : schemaResources) {
-            typeRegistry.merge(schemaParser.parse(schemaResource.getInputStream()));
-        }
-
-        // Configurar el RuntimeWiring
-        RuntimeWiring runtimeWiring = runtimeWiringBuilder
-                .type("Query", typeWiring -> typeWiring
-                        .dataFetcher("facturas", environment -> facturaResolver.getFacturas())
-                        .dataFetcher("factura", environment -> facturaResolver.getFactura(environment.getArgument("nro")))
-                        .dataFetcher("usuarios", environment -> usuarioResolver.getUsuarios())
-                        .dataFetcher("usuario", environment -> usuarioResolver.getUsuario(environment.getArgument("id")))
-                        .dataFetcher("mesas", environment -> mesaResolver.getMesas())
-                        .dataFetcher("mesaByNro", environment -> mesaResolver.getMesaByNro(environment.getArgument("nro")))
-                        .dataFetcher("mesa", environment -> mesaResolver.getMesa(environment.getArgument("id")))
-                        .dataFetcher("menus", environment -> menuResolver.getMenus())
-                        .dataFetcher("menu", environment -> menuResolver.getMenu(environment.getArgument("id"))))
-                .type("Mutation", typeWiring -> typeWiring
-                        .dataFetcher("createFactura", environment -> facturaResolver.createFactura(
-                                environment.getArgument("id_usuario"), environment.getArgument("total"),
-                                environment.getArgument("fecha"), environment.getArgument("pedido")))
-                        .dataFetcher("createMesa", environment -> mesaResolver.createMesa(
-                                environment.getArgument("id_usuario"), environment.getArgument("nro"),
-                                environment.getArgument("capacidad"), environment.getArgument("disponible")))
-                        .dataFetcher("updateMesa", environment -> mesaResolver.updateMesa(
-                                environment.getArgument("id"), environment.getArgument("nro"),
-                                environment.getArgument("capacidad"), environment.getArgument("disponible")))
-                        .dataFetcher("updateMesaByNro", environment -> mesaResolver.updateMesaByNro(
-                                environment.getArgument("nro"),
-                                environment.getArgument("capacidad"), environment.getArgument("disponible")))
-                        .dataFetcher("deleteMesa", environment -> mesaResolver.deleteMesa(
-                                environment.getArgument("id")))
-                        .dataFetcher("updateFactura", environment -> facturaResolver.updateFactura(
-                                environment.getArgument("nro"),
-                                environment.getArgument("total"), environment.getArgument("fecha")))
-                        .dataFetcher("deleteFactura", environment -> facturaResolver.deleteFactura(
-                                environment.getArgument("nro")))
-                        .dataFetcher("createMenu", environment -> menuResolver.createMenu(
-                                environment.getArgument("id_usuario"), environment.getArgument("fecha"),
-                                environment.getArgument("plato"),environment.getArgument("bebida")))
-                        .dataFetcher("updateMenu", environment -> menuResolver.updateMenu(
-                        		 environment.getArgument("id"), environment.getArgument("fecha"),
-                                 environment.getArgument("plato"),environment.getArgument("bebida")))
-                        .dataFetcher("deleteMenu", environment -> menuResolver.deleteMenu(
-                                environment.getArgument("id")))
-                        .dataFetcher("createUsuario", environment -> usuarioResolver.createUsuario(
-                                environment.getArgument("nombreUsuario"), environment.getArgument("email"),
-                                environment.getArgument("password"), environment.getArgument("admin")))
-                        .dataFetcher("login", environment -> usuarioResolver.login(
-                                environment.getArgument("email"),
-                                environment.getArgument("password")))
-                        .dataFetcher("updateUsuario", environment -> usuarioResolver.updateUsuario(
-                                environment.getArgument("id"),
-                                environment.getArgument("nombre_usuario"), environment.getArgument("password"),
-                                environment.getArgument("isAdmin")))
-                        .dataFetcher("deleteUsuario", environment -> usuarioResolver.deleteUsuario(
-                                environment.getArgument("id"))))
-                .build();
-
-        GraphQLSchema schema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
-        return GraphQlSource.builder(schema).build();
-    }
-
-	private String loadSchema(String path) throws IOException {
-		Resource resource = new ClassPathResource(path);
-		return new String(Files.readAllBytes(resource.getFile().toPath()));
+	@Bean
+	MenuMutationResolver menuMutationResolver() {
+		return new MenuMutationResolver();
+	}
+	
+	@Bean
+	MesaMutationResolver mesaMutationResolver() {
+		return new MesaMutationResolver();
+	}
+	
+	@Bean
+	MesaQueryResolver mesaQueryResolver() {
+		return new MesaQueryResolver();
 	}
 }

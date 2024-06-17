@@ -8,9 +8,9 @@ type Mesa {
 }
 
 extend type Query {
-  mesas: [Mesa]
-  mesa(id: ID!): Mesa
-  mesaByNro(nro: Int!): Mesa
+  getMesas: [Mesa]
+  getMesa(id: ID!): Mesa
+  getMesaByNro(nro: Int!): Mesa
 }
 
 extend type Mutation {

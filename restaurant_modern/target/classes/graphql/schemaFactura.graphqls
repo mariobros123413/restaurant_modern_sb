@@ -52,8 +52,8 @@ type Factura {
 }
 
 extend type Query {
-  facturas: [Factura]
-  factura(nro: ID!): Factura
+  getFacturas: [Factura]
+  getFactura(nro: ID!): Factura
 }
 
 extend type Mutation {

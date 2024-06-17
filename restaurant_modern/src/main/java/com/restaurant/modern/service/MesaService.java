@@ -22,9 +22,10 @@ public class MesaService {
 		return mesaRepository.findAll();
 	}
 
-	public Mesa createMesa(String id_usuario, Integer nro, Integer capacidad, Boolean disponible) {
+	public Mesa createMesa(Long id_usuario, Integer nro, Integer capacidad, Boolean disponible) {
 		Optional<Usuario> optionalUsuario = usuarioRepository.findById(id_usuario);
-		if (optionalUsuario.isPresent()) {
+		Optional<Mesa> optionalMesa = mesaRepository.findByNro(nro);
+		if (optionalUsuario.isPresent() && !optionalMesa.isPresent()) {
 			Usuario usuario = optionalUsuario.get();
 			Mesa mesac = new Mesa(nro, capacidad, disponible, usuario);
 

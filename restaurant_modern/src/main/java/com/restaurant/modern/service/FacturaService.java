@@ -23,7 +23,7 @@ public class FacturaService {
 		return facturaRepository.findAll();
 	}
 
-	public Factura createFactura(String id_usuario, Double total, String fecha, Pedido pedido ) {
+	public Factura createFactura(Long id_usuario, Double total, String fecha, Pedido pedido ) {
 
 		// Buscar el usuario en la base de datos
 		Optional<Usuario> optionalUsuario = usuarioRepository.findById(id_usuario);

@@ -1,25 +1,31 @@
-
-type Usuario {
-    id: ID!
-    nombre_usuario: String!
-    email: String!
-    password: String!
-    isAdmin: Boolean!
+enum Role {
+  USER
+  ADMIN
 }
 
-type AuthPayload {
-  token: String
-  user: Usuario
+type Usuario {
+  id: ID
+  nombre_usuario: String!
+  email: String!
+  password: String!
+   role: String!
+}
+
+input NewUser {
+  id: ID
+  nombre_usuario: String
+  email: String
+  password: String
+  role: Role = USER
 }
 
 type Query {
-  usuarios: [Usuario]
-  usuario(id: ID!): Usuario
+  getUsers: [Usuario]!
 }
 
 type Mutation {
-  createUsuario(nombreUsuario: String!, email: String!, password: String!, admin: Boolean!): Usuario
-  updateUsuario(id: ID!, nombre_usuario: String!, password: String!, isAdmin: Boolean!): Usuario
-  deleteUsuario(id: ID!): Boolean
-  login(email: String!, password: String!): String
+  createUsuario(usuario: NewUser!): Usuario!
+  login(email: String!, password: String!): String!
+  updateUsuario(usuario: NewUser!):Usuario!
+  deleteUsuario(id : String!) : Boolean!
 }

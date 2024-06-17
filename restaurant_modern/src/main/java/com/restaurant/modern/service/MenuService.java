@@ -20,11 +20,11 @@ public class MenuService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	public List<?> getAllMenus() {
+	public List<Menu> getAllMenus() {
 		return menuRepository.findAll();
 	}
 
-	public Menu createMenu(String id_usuario, String fecha, List<Plato> plato, List<Bebida> bebida) {
+	public Menu createMenu(Long id_usuario, String fecha, List<Plato> plato, List<Bebida> bebida) {
 
 		// Buscar el usuario en la base de datos
 		Optional<Usuario> optionalUsuario = usuarioRepository.findById(id_usuario);

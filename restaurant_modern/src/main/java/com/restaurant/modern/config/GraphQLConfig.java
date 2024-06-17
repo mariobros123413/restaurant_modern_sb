@@ -100,10 +100,10 @@ public class GraphQLConfig {
                         .dataFetcher("deleteMenu", environment -> menuResolver.deleteMenu(
                                 environment.getArgument("id")))
                         .dataFetcher("createUsuario", environment -> usuarioResolver.createUsuario(
-                                environment.getArgument("nombreUsuario"),
+                                environment.getArgument("nombreUsuario"), environment.getArgument("email"),
                                 environment.getArgument("password"), environment.getArgument("admin")))
                         .dataFetcher("login", environment -> usuarioResolver.login(
-                                environment.getArgument("username"),
+                                environment.getArgument("email"),
                                 environment.getArgument("password")))
                         .dataFetcher("updateUsuario", environment -> usuarioResolver.updateUsuario(
                                 environment.getArgument("id"),

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Factura {
 	@Id
 	private String nro;
-    @DBRef
+	@DBRef
 	private Usuario id_usuario;
 	private Double total;
 	private String fecha;

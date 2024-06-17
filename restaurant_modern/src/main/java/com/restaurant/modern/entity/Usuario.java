@@ -15,13 +15,16 @@ public class Usuario {
 	private String id;
     @Field("nombre_usuario")
 	private String nombre_usuario;
+    @Field("email")
+    private String email;
 	private String password;
 	private boolean isAdmin;
 	@ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;
 	
-	public Usuario(String nombre_usuario, String password, boolean isAdmin) {
+	public Usuario(String nombre_usuario,String email, String password, boolean isAdmin) {
 		this.nombre_usuario = nombre_usuario;
+		this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
         }
@@ -48,6 +51,12 @@ public class Usuario {
 	}
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 }

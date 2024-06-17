@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.dao.DuplicateKeyException;
 import com.restaurant.modern.entity.Usuario;
 import com.restaurant.modern.repository.UsuarioRepository;
 
@@ -28,19 +28,33 @@ public class UsuarioService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Usuario> usuarioOptional = usuarioRepository.findByNombre_usuario(username);
+		Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(username);
 		Usuario usuario = usuarioOptional
 				.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
-		return new org.springframework.security.core.userdetails.User(usuario.getNombre_usuario(),
-				usuario.getPassword(), new ArrayList<>());
+		return new org.springframework.security.core.userdetails.User(usuario.getEmail(), usuario.getPassword(),
+				new ArrayList<>());
 	}
 
-	public Usuario createUsuario(String nombreUsuario, String password, Boolean admin) {
-		String encodedPassword = passwordEncoder.encode(password);
+	
 
-		Usuario user = new Usuario(nombreUsuario, encodedPassword, admin);
-		return usuarioRepository.save(user);
+	public Usuario createUsuario(String nombreUsuario, String email, String password, Boolean admin) {
+	    try {
+	        String encodedPassword = passwordEncoder.encode(password);
+	        Optional<Usuario> userSearch = usuarioRepository.findByEmail(email);
+
+	        if (userSearch.isPresent()) {
+	            throw new IllegalStateException("El correo electrónico ya está registrado.");
+	        }
+
+	        Usuario user = new Usuario(nombreUsuario, email, encodedPassword, admin);
+	        return usuarioRepository.save(user);
+	    } catch (DuplicateKeyException e) {
+	        throw new IllegalStateException("El correo electrónico ya está registrado.", e);
+	    }
 	}
+
+
+
 
 	public Usuario getUsuario(String id) {
 		return usuarioRepository.findById(id)

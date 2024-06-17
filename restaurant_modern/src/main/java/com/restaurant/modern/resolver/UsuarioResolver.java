@@ -37,14 +37,14 @@ public class UsuarioResolver implements GraphQLQueryResolver {
 	@Autowired
 	private final PasswordEncoder passwordEncoder;
 
-    private static final SecretKey SECRET_KEY = JwtUtils.getSecretKey();
+	private static final SecretKey SECRET_KEY = JwtUtils.getSecretKey();
 
 	public UsuarioResolver(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@QueryMapping
-    //@Secured("ROLE_ADMIN")
+	// @Secured("ROLE_ADMIN")
 	public List<Usuario> getUsuarios() {
 		return usuarioService.getAllUsuarios();
 	}
@@ -55,8 +55,8 @@ public class UsuarioResolver implements GraphQLQueryResolver {
 	}
 
 	@MutationMapping
-	public Usuario createUsuario(String nombreUsuario, String password, Boolean isAdmin) {
-		return usuarioService.createUsuario(nombreUsuario, password, isAdmin);
+	public Usuario createUsuario(String nombreUsuario, String email, String password, Boolean isAdmin) {
+		return usuarioService.createUsuario(nombreUsuario, email, password, isAdmin);
 	}
 
 	@MutationMapping
@@ -71,9 +71,9 @@ public class UsuarioResolver implements GraphQLQueryResolver {
 	}
 
 	@MutationMapping
-	public String login(@Argument String username, @Argument String password) {
+	public String login(@Argument String email, @Argument String password) {
 
-		UserDetails userDetails = usuarioService.loadUserByUsername(username);
+		UserDetails userDetails = usuarioService.loadUserByUsername(email); //está con ByEmail
 
 		if (passwordEncoder.matches(password, userDetails.getPassword())) {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
@@ -91,16 +91,14 @@ public class UsuarioResolver implements GraphQLQueryResolver {
 		String username = ((UserDetails) authentication.getPrincipal()).getUsername();
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
-		
-		
+
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		
+
 		Set<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toSet());
-		
-		String token = Jwts.builder().setIssuer("Stormpath").setSubject(username).claim("roles", roles)
-				.setIssuedAt(now).setExpiration(expiryDate).signWith(SECRET_KEY, SignatureAlgorithm.HS512)
-				.compact();
+
+		String token = Jwts.builder().setIssuer("Stormpath").setSubject(username).claim("roles", roles).setIssuedAt(now)
+				.setExpiration(expiryDate).signWith(SECRET_KEY, SignatureAlgorithm.HS512).compact();
 		System.out.println(" TOKEN ----------------------" + token);
 		return token;
 	}

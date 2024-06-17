@@ -2,6 +2,7 @@
 type Usuario {
     id: ID!
     nombre_usuario: String!
+    email: String!
     password: String!
     isAdmin: Boolean!
 }
@@ -17,8 +18,8 @@ type Query {
 }
 
 type Mutation {
-  createUsuario(nombreUsuario: String!, password: String!, admin: Boolean!): Usuario
+  createUsuario(nombreUsuario: String!, email: String!, password: String!, admin: Boolean!): Usuario
   updateUsuario(id: ID!, nombre_usuario: String!, password: String!, isAdmin: Boolean!): Usuario
   deleteUsuario(id: ID!): Boolean
-  login(username: String!, password: String!): String
+  login(email: String!, password: String!): String
 }

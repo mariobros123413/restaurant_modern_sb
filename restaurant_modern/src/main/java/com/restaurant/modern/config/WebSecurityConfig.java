@@ -43,7 +43,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/graphql/**").permitAll()
                     .requestMatchers("/graphiql", "/vendor/graphiql/*").permitAll()
                     .requestMatchers("/h2-console/*").permitAll()
-                    .anyRequest().denyAll())
+                    .anyRequest().permitAll())
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class)), tokenUtils))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

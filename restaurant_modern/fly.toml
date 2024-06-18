@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for restaurant-modern-23 on 2024-06-17T18:27:31-04:00
+# fly.toml app configuration file generated for restaurant-modern on 2024-06-17T19:33:13-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'restaurant-modern-23'
+app = 'restaurant-modern'
 primary_region = 'scl'
 
 [build]
@@ -17,4 +17,6 @@ primary_region = 'scl'
   processes = ['app']
 
 [[vm]]
-  size = 'performance-4x'
+  memory = '2gb'
+  cpu_kind = 'shared'
+  cpus = 4

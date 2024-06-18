@@ -51,7 +51,18 @@ type Factura {
     pedido: Pedido
 }
 
+type FacturaPagination {
+    paginaInfo: PaginaInfo!
+    facturas: [Factura!]!
+}
+type PaginaInfo {
+    totalPaginas: Int!
+    totalElementos: Int!
+    paginaActual: Int!
+    pageSize: Int!
+}
 extend type Query {
+  getFacturasS(page: Int, size: Int): FacturaPagination!
   getFacturas: [Factura]
   getFactura(nro: ID!): Factura
 }
